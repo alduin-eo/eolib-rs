@@ -27,14 +27,14 @@ jobs:
           toolchain: ${{ matrix.rust }}
           components: clippy, rustfmt
 
-      - name: Check formatting
-        run: cargo fmt -- --check
-
-      - name: Check for warnings
-        run: cargo clippy -- -D warnings
-
       - name: Build project
         run: cargo build
 
       - name: Run tests
         run: cargo test
+
+      - name: Check formatting
+        run: cargo fmt -- --check
+
+      - name: Check for warnings
+        run: cargo clippy -- -D warnings
