@@ -1,29 +1,27 @@
 [package]
 name = "eolib"
-version = "2.1.1"
+version = "3.0.0"
 authors = ["Richard Leek <richard@richardleek.com>"]
 description = "A core rust library for writing applications related to Endless Online"
-edition = "2021"
-rust-version = "1.61.0"
+edition = "2024"
+rust-version = "1.87.0"
 license = "MIT"
 repository = "https://github.com/sorokya/eolib-rs"
 readme = "README.md"
-exclude = [
-    ".github",
-]
+exclude = [".github"]
 
 [features]
-use_serde = ["serde"]
+serde = ["dep:serde"]
 
 [dependencies]
-bytes = "1.10"
-encoding_rs = "0.8.33"
-rand = "0.8.5"
+bytes = "1.11"
+encoding_rs = "0.8"
+rand = "0.10"
 thiserror = "2.0"
 serde = { version = "1.0", features = ["derive"], optional = true }
 
 [build-dependencies]
-glob = "0.3.1"
-serde = {version = "1.0", features = ["derive"]}
-quick-xml = {version = "0.37.2", features = ["serialize", "overlapped-lists"]}
-convert_case = "0.7.1"
+glob = "0.3"
+serde = { version = "1.0", features = ["derive"] }
+quick-xml = { version = "0.39", features = ["serialize", "overlapped-lists"] }
+convert_case = "0.11"

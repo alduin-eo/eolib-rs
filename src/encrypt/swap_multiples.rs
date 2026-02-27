@@ -17,7 +17,7 @@ pub fn swap_multiples(bytes: &mut [u8], multiple: u8) {
     let length = bytes.len();
     let mut sequence_length: usize = 0;
     for i in 0..=length {
-        if i != length && bytes[i] % multiple == 0 {
+        if i != length && bytes[i].is_multiple_of(multiple) {
             sequence_length += 1;
         } else {
             if sequence_length > 1 {

@@ -1,6 +1,6 @@
 use std::cmp;
 
-use rand::Rng;
+use rand::RngExt;
 
 use crate::data::CHAR_MAX;
 
@@ -46,18 +46,18 @@ impl Sequencer {
 
 /// returns a random sequence start value
 pub fn generate_sequence_start() -> i32 {
-    let mut rng = rand::thread_rng();
-    rng.gen_range(0..=CHAR_MAX - 10)
+    let mut rng = rand::rng();
+    rng.random_range(0..=CHAR_MAX - 10)
 }
 
 /// returns sequence bytes from a starting value
 ///
 /// used by the server for Init_Init packet
 pub fn get_init_sequence_bytes(start: i32) -> [i32; 2] {
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
     let seq1_min = cmp::max(0, (start - (CHAR_MAX - 1) + 13 + 6) / 7);
     let seq1_max = (start + 13) / 7;
-    let seq1 = rng.gen_range(0..=seq1_max - seq1_min) + seq1_min;
+    let seq1 = rng.random_range(0..=seq1_max - seq1_min) + seq1_min;
     let seq2 = start - seq1 * 7 + 13;
     [seq1, seq2]
 }
@@ -73,10 +73,10 @@ pub fn get_init_sequence_start(s1: i32, s2: i32) -> i32 {
 ///
 /// used by the server for Ping packet
 pub fn get_ping_sequence_bytes(start: i32) -> [i32; 2] {
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
     let seq1_max = start + 252;
     let seq1_min = start;
-    let seq1 = rng.gen_range(seq1_min..=seq1_max);
+    let seq1 = rng.random_range(seq1_min..=seq1_max);
     let seq2 = seq1 - start;
     [seq1, seq2]
 }

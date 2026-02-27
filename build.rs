@@ -6,6 +6,7 @@ use std::{
     fs::File,
     io::{Read, Write},
     path::{Path, PathBuf},
+    process::Command,
 };
 
 #[derive(Debug, Deserialize)]
@@ -281,6 +282,23 @@ fn main() {
         let mut mod_file = File::create(output_dir.join("mod.rs")).unwrap();
         mod_file.write_all(mod_code.as_bytes()).unwrap();
     }
+
+    // Format generated code with rustfmt
+    let out_dir = match std::env::var_os("OUT_DIR") {
+        Some(out_dir) => PathBuf::from(out_dir),
+        None => panic!("OUT_DIR environment variable is not set"),
+    };
+
+    let files = glob(&format!("{}/**/*.rs", out_dir.to_string_lossy()))
+        .expect("Failed to read glob pattern")
+        .filter_map(Result::ok)
+        .collect::<Vec<_>>();
+
+    let _ = Command::new("rustfmt")
+        .arg("--edition")
+        .arg("2024")
+        .args(&files)
+        .output();
 }
 
 fn generate_enum_file(
@@ -304,7 +322,7 @@ fn generate_enum_file(
     };
 
     append_doc_comments(&mut code, comments);
-    code.push_str("#[derive(Debug, PartialEq, Eq, Copy, Clone)]\n");
+    code.push_str("#[derive(Debug, PartialEq, Eq, Copy, Clone, Default)]\n");
     code.push_str("#[cfg_attr(feature = \"serde\", derive(Serialize, Deserialize))]\n");
     code.push_str(&format!("pub enum {} {{\n", protocol_enum.name));
 
@@ -317,13 +335,16 @@ fn generate_enum_file(
         })
         .collect();
 
-    for variant in &variants {
+    for (index, variant) in variants.iter().enumerate() {
         let comments = match &variant.comment {
             Some(comment) => get_comments(comment),
             None => vec![],
         };
 
         append_doc_comments(&mut code, comments);
+        if index == 0 {
+            code.push_str("    #[default]\n");
+        }
         code.push_str(&format!("    {},\n", replace_keyword(&variant.name)));
     }
     code.push_str(&format!(
@@ -382,16 +403,6 @@ fn generate_enum_file(
     code.push_str("        }\n");
     code.push_str("    }\n");
     code.push_str("}\n\n");
-
-    code.push_str(&format!("impl Default for {} {{\n", protocol_enum.name));
-
-    code.push_str("    fn default() -> Self {\n");
-    code.push_str(&format!(
-        "        Self::{}\n",
-        replace_keyword(&variants[0].name)
-    ));
-    code.push_str("    }\n");
-    code.push_str("}\n");
 
     code.push_str(CODEGEN_WARNING);
 
@@ -1032,10 +1043,7 @@ fn generate_inner_field_serialize(
                     None => "",
                 };
 
-                let padded = match field.padded {
-                    Some(padded) => padded,
-                    _ => false,
-                };
+                let padded = field.padded.unwrap_or_default();
 
                 if padded
                     && !length.is_empty()
