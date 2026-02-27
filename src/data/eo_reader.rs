@@ -265,10 +265,7 @@ impl EoReader {
     fn read_bytes(&self, length: usize) -> Option<&[u8]> {
         let position = self.position.get();
         let length = cmp::min(length, self.remaining());
-        let buf = match self.data.get(position..position + length) {
-            Some(buf) => buf,
-            None => return None,
-        };
+        let buf = self.data.get(position..position + length)?;
         self.position.set(position + length);
         Some(buf)
     }

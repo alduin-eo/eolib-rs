@@ -53,7 +53,7 @@ pub fn encrypt_packet(buf: &mut [u8], swap_multiple: u8) {
 
     let length = buf.len();
     let mut tmp: Vec<u8> = vec![0; length];
-    let big_half = (length + 1) / 2;
+    let big_half = length.div_ceil(2);
     let little_half = length / 2;
     for i in 0..big_half {
         tmp[i * 2] = buf[i];

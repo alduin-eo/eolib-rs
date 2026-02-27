@@ -168,11 +168,11 @@ pub fn encode_number(number: i32) -> Result<[u8; 4], EoWriterError> {
 /// ```
 ///
 /// * bytes with `254` are swapped to `1`
-/// `[43, 1, 1, 1]`
+///   `[43, 1, 1, 1]`
 /// * bytes are decremented by 1
-/// `[42, 0, 0, 0]`
+///   `[42, 0, 0, 0]`
 /// * bytes are multiplied by MAX's and summed
-/// `(0 * THREE_MAX) + (0 * SHORT_MAX) + (0 * CHAR_MAX) + 42 == 42`
+///   `(0 * THREE_MAX) + (0 * SHORT_MAX) + (0 * CHAR_MAX) + 42 == 42`
 ///
 pub fn decode_number(bytes: &[u8]) -> i32 {
     let mut data: [u8; 4] = [254, 254, 254, 254];

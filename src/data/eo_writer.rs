@@ -2,7 +2,7 @@ use bytes::{BufMut, Bytes, BytesMut};
 use encoding_rs::WINDOWS_1252;
 use thiserror::Error;
 
-use super::{encode_number, encode_string, CHAR_MAX, INT_MAX, SHORT_MAX, THREE_MAX};
+use super::{CHAR_MAX, INT_MAX, SHORT_MAX, THREE_MAX, encode_number, encode_string};
 
 #[derive(Error, Debug, PartialEq, Eq)]
 pub enum EoWriterError {
@@ -159,7 +159,7 @@ impl EoWriter {
 
 #[cfg(test)]
 mod tests {
-    use crate::data::{eo_writer::EoWriterError, CHAR_MAX, SHORT_MAX, THREE_MAX};
+    use crate::data::{CHAR_MAX, SHORT_MAX, THREE_MAX, eo_writer::EoWriterError};
 
     use super::EoWriter;
 

@@ -1,4 +1,4 @@
-use super::{eo_reader::EoReaderError, eo_writer::EoWriterError, EoReader, EoWriter};
+use super::{EoReader, EoWriter, eo_reader::EoReaderError, eo_writer::EoWriterError};
 use thiserror::Error;
 
 #[derive(Error, Debug, PartialEq, Eq)]
